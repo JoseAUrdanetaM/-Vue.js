@@ -11,7 +11,8 @@ const handleSearch = () => {
   searchTerm.timeout = setTimeout(async () => {
     if (searchTerm.query !== '') {
       const res = await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=9eca13e45fb84bb0ab5114140241704&q=${searchTerm.query}`
+        // `http://api.weatherapi.com/v1/current.json?key=9eca13e45fb84bb0ab5114140241704&q=${searchTerm.query}`
+        `http://api.weatherapi.com/v1/search.json?key=9eca13e45fb84bb0ab5114140241704&q=${searchTerm.query}`
       )
 
       const data = await res.json()
@@ -21,6 +22,15 @@ const handleSearch = () => {
       searchTerm.results = null
     }
   }, 500)
+}
+
+const getWeather = async (id) => {
+  console.log(id)
+  const res = await fetch(
+    `http://api.weatherapi.com/v1/forecast.json?key=9eca13e45fb84bb0ab5114140241704&q=id:${id}&days=3&aqi=no&alerts=no`
+  )
+  const data = await res.json()
+  console.log(data)
 }
 </script>
 
@@ -43,7 +53,10 @@ const handleSearch = () => {
     <div class="bg-white my-2 rounded-lg shadow-lg">
       <div v-if="searchTerm.results !== null">
         <div v-for="place in searchTerm.results" :key="place.id">
-          <button class="px-3 my-2 hover:text-indigo-600 hover:font-bold w-full text-left">
+          <button
+            @click="getWeather(place.id)"
+            class="px-3 my-2 hover:text-indigo-600 hover:font-bold w-full text-left"
+          >
             {{ place.name }}, {{ place.region }}, {{ place.country }}
           </button>
         </div>
